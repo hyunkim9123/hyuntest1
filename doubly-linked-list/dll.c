@@ -1,5 +1,5 @@
 //
-// 2. Employee Management System
+// 2. Bank Management System
 //
 
 #include <stdio.h>
@@ -8,17 +8,15 @@
 #include "list.h"
 
 //Bank`s name = null
-//employee`s name not null
+//Account`s name not null
 
 int disp_menu() ;
 void print_list(Node *head);
 
-void loan(Node *head);
+void add_loan(Node *head);
 void repay(Node *head);
-void add_employee(Node *head);
-Employee* make_employee(Node* head);
-void retrieve_employee(Node *head);
-void remove_employee(Node *head);
+void add_account(Node *head, int account);
+Account* make_account(Node* head, char* name,int account);
 void merge_account(Node *head);//merge account if money to lend is bigger than bank`s account money
 int main(void)
 {
@@ -27,12 +25,15 @@ int main(void)
 
   init_list(&head);
 
+  add_account(head, 50000);
+  print_list(head);
   while(1){
     sel=disp_menu();
     if(sel==0) break;
     switch(sel){
-      case 1: loan(head); break;
+      case 1: add_loan(head); break;
       case 2: repay(head); break;
+      case 3: print_list(head); break;
       default: break;
     }
   }
@@ -48,10 +49,11 @@ int disp_menu()
   int sel;
 
   printf("\n===================================\n");
-  printf("     Employee Management System\n");
+  printf("     Account Management System\n");
   printf("===================================\n");
   printf("1. loan\n");
   printf("2. Repay\n");
+  printf("3. Print\n");
   printf("0. Exit\n");
   printf(">> Select menu : ");
   scanf("%d", &sel);
@@ -67,53 +69,27 @@ void print_list(Node *head)
 
   printf("\n");
   while(tp != NULL){
-    printf("[%d] %8s %22s %8d\n", ++cnt, tp->data->emp_no, tp->data->name, tp->data->account);
+    printf("[%d] %22s %8d\n", ++cnt,  tp->data->name, tp->data->account);
     tp=tp->next;
   }
 }
 
-// Desc : Adding a new employee to list
+// Desc : Adding a new Account to list
 // Params : head - The head node of list
 // Return : None
-void add_bank(Node *head)
+void add_account(Node *head, int account)
 {
   Node* node;
-  Employee* ep;
-  char name[32];
+  Account* ep;
 
-  ep = make_employee(head);
-  if(ep == NULL)
-  {
-    printf(":: The employee number already exists!\n\n");
-    return;
-  }
+  ep = make_account(head, NULL, account);
 
   node = new_node(ep);
   insert_node(head, node);
 
   printf(":: Success!\n");
 }
-// Desc : loan money from bank. if exists, just add the money to the account. If money is bigger than all the bank`s, then merge all bank`s account.  
-// Params : head - The head node of list
-// Return : None
-void loan(Node *head)
-{
-  Node* node;
-  Employee* ep;
-  char name[32];
 
-  ep = make_employee(head);
-  if(ep == NULL)
-  {
-    printf(":: The employee number already exists!\n\n");
-    return;
-  }
-
-  node = new_node(ep);
-  insert_node(head, node);
-
-  printf(":: Success!\n");
-}
 // Desc : repay money to bank. if person not exists, pop up error. If repay all the money in the account, remove the node.
 // Params : head - The head node of list
 // Return : None
@@ -121,137 +97,57 @@ void repay(Node *head)
 {
   Node* node;
   char name[32];
-  Employee* ep;
-  ep = make_employee(head);
+  Account* ep;
+
+  printf(":: Success!\n");
+}
+// Desc : loan money from bank. if exists, just add the money to the account. If money is bigger than all the bank`s, then merge all bank`s account.  
+// Params : head - The head node of list
+// Return : None
+void add_loan(Node* head)
+{
+  char name[32];
+  int account;
+  Account* ep = NULL;
+  Node* node;
+
+  printf("\n");
+  printf("> Account Name : ");
+  scanf("%s", name);
+  fflush(stdin);
+
+  printf("> amount to loan : ");
+  scanf("%d", &account);
+  fflush(stdin);
+  ep = make_account(head, name, account);
   if(ep == NULL)
   {
-    printf(":: The employee number already exists!\n\n");
+    printf(":: The Account name already exists!\n\n");
     return;
   }
 
   node = new_node(ep);
   insert_node(head, node);
-
-  printf(":: Success!\n");
 }
-Employee* add_loan(Node* head)
+Account* make_account(Node* head, char* name, int account)
 {
-  char id[7];
-  char name[32];
-  int account;
-  Employee* new_emp = NULL;
+  Account* new_account = NULL;
 
-  printf("\n");
-  printf("> Employee Name : ");
-  gets(name);
-
-  if(find_node(head, id))
+  if(name != NULL && find_node(head, name) != NULL)
   {
     return NULL;
   }
 
-  printf("> Name : ");
-  gets(name);
-  printf("> account : ");
-  scanf("%d", &account);
-
-  new_emp = (Employee*)malloc(sizeof(Employee));
-  new_emp->name = (char*)malloc(strlen(name)+1);
-  strcpy(new_emp->emp_no, id);
-  strcpy(new_emp->name, name);
-  new_emp->account = account;
-
-  return new_emp;
-}
-Employee* make_bank(Node* head, int account)
-{
-  char id[7];
-  char name[32];
-  int account;
-  Employee* new_emp = NULL;
-
-  new_emp = (Employee*)malloc(sizeof(Employee));
-  new_emp->name = (char*)malloc(strlen(name)+1);
-  strcpy(new_emp->emp_no, id);
-  strcpy(new_emp->name, name);
-  new_emp->account = account;
-
-  return new_emp;
-}
-// Desc : Make Employee data form user input
-// Params : head - The head node of list
-// Return : Employee(Dynamically allocated)
-Employee* make_employee(Node* head)
-{
-  char id[7];
-  char name[32];
-  int account;
-  Employee* new_emp = NULL;
-
-  printf("\n");
-  printf("> Employee Number : ");
-  gets(id);
-
-  if(find_node(head, id))
+  new_account = (Account*)malloc(sizeof(Account));
+  if(name == NULL)
+    new_account->name = NULL;
+  else
   {
-    return NULL;
+    new_account->name = (char*)malloc(strlen(name)+1);
+    strcpy(new_account->name, name);
   }
+  new_account->account = account;
 
-  printf("> Name : ");
-  gets(name);
-  printf("> account : ");
-  scanf("%d", &account);
-
-  new_emp = (Employee*)malloc(sizeof(Employee));
-  new_emp->name = (char*)malloc(strlen(name)+1);
-  strcpy(new_emp->emp_no, id);
-  strcpy(new_emp->name, name);
-  new_emp->account = account;
-
-  return new_emp;
+  return new_account;
 }
 
-// Desc : Print all the employee data
-// Params : head - The head node of list
-// Return : None
-void retrieve_employee(Node *head) 
-{
-  if(head->next == NULL)
-  {
-    printf("\n:: There is no employee!\n");
-    return;
-  }
-  sort_list(head);
-  print_list(head);
-}
-
-// Desc : Remove a employee from list
-// Params : head - The head node of list
-// Return : None
-void remove_employee(Node *head) 
-{
-  Node* node;
-  char emp_no[7];
-
-  if(head->next == NULL)
-  {
-    printf("\n:: There is no employee!\n");
-    return;
-  }
-
-  sort_list(head);
-  print_list(head); 
-
-  printf("\n> Employee Number : ");
-  gets(emp_no);
-  fflush(stdin);
-
-  node = find_node(head, emp_no);
-  if(node)
-  {
-    remove_node(head, node);
-    printf(":: Success!\n");
-  }else{
-    printf(":: The employee number does not exist!\n");   
-  }
-}

@@ -1,28 +1,26 @@
 #ifndef __LIST_H__
 #define __LIST_H__
 
-// Employee structure
+// Account structure
 typedef struct {
-  char emp_no[7];
   char* name;
   int account;
-} Employee;
+} Account;
 
 // Node for linked list 
 typedef struct node {
-    Employee *data;     
-      struct node *next;  
+  Account *data;     
+  struct node *next;
+  struct node *prev;
 } Node;
 
-Node *find_node(Node *head, char *new_emp_no);
+Node *find_node(Node *head, char *name);
 void remove_node(Node* head, Node *tp);
-Node* new_node(Employee* ep);
+Node* new_node(Account* ep);
 void insert_node(Node* head, Node *tp);
 
 void init_list(Node **head);
 void sort_list(Node *head);
 void deallocate_list(Node *head);
-void merge_list(Node *head);
+
 #endif
-
-

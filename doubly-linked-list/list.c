@@ -13,10 +13,10 @@ void init_list(Node **head)
   (*head)->next = NULL;
 }
 
-// Desc : Making a new node contaning the employee
+// Desc : Making a new node contaning the Account
 // Param : ep - menu to be contained
 // Return : Node dynamically allocated
-Node* new_node(Employee* ep)
+Node* new_node(Account* ep)
 {
   Node *tp;
 
@@ -43,9 +43,7 @@ void insert_node(Node* head, Node *tp)
 void sort_list(Node *head)
 {
 
-
   // TODO: Write code here
-
 
 }
 
@@ -55,21 +53,17 @@ void sort_list(Node *head)
 void remove_node(Node* head, Node *tp)
 {
 
-
-  // TODO: Write coe here
-
+  // TODO: Write code here
 
 }
 
 // Desc : Finding the node in position of the index
-// Param : head - head pointer of linked list, new_emp_no - employee number to find
+// Param : head - head pointer of linked list, new_emp_no - Account number to find
 // Return : Node contains new_emp_no, NULL if not found
-Node *find_node(Node *head, char *new_emp_no)
+Node *find_node(Node *head, char *name)
 {
 
-
   // TODO: Write code here
-
 
   return NULL;
 }
@@ -80,8 +74,6 @@ Node *find_node(Node *head, char *new_emp_no)
 void deallocate_list(Node *head)
 {
 
-
   // TODO: Write code here
-
 
 }
